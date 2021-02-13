@@ -12,6 +12,7 @@ body {
   width: 100vmin;
   height: 100vmin;
   display: grid;
+  gap: 1px;
   /* grid-borders - [1, 10] */
   grid-template-rows: repeat(20, 1fr);
   grid-template-columns: repeat(20, 1fr);

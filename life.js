@@ -84,41 +84,38 @@ function step(){
 function draw(){
   gameGrid.innerHTML = '';
   for(let [row, col] of createMatrixIter()){
-    if (grid[row][col]){
-      const cellElement = document.createElement('div');
-      cellElement.style.gridRowStart = row+1;
-      cellElement.style.gridColumnStart = col+1;
-      cellElement.classList.add('life');
-      gameGrid.appendChild(cellElement);
-    }
+    const cellElement = document.createElement('div');
+    cellElement.style.gridRowStart = row+1;
+    cellElement.style.gridColumnStart = col+1;
+    // add specific class for cell
+    alive = (grid[row][col] === 1);
+    className = alive ? "life" : "dead";
+    cellElement.classList.add(className);
+    // add general class for cell
+    cellElement.classList.add('cell');
+    gameGrid.appendChild(cellElement);
+    
   }
 }
 
-delta_time = 200;
+
+function addMouseClickListeners(){
+  $('cell').onClick()
+}
 
 
+
+deltaTime = 200;
 let lastRenderTime = 0;
 
 function main(currentTime) {
-  // if (gameOver) {
-  //   if (confirm('You lost. Press ok to restart.')) {
-  //     window.location = '/'
-  //   }
-  //   return
-  // }
-
   window.requestAnimationFrame(main)
   const secondsSinceLastRender = (currentTime - lastRenderTime);
-  if (secondsSinceLastRender < 200) return
-  lastRenderTime = currentTime
+  if (secondsSinceLastRender < deltaTime) return
+  lastRenderTime = currentTime;
   draw();
   step();
 }
 
 
 window.requestAnimationFrame(main);
-// draw();
-
-// for(let [row, col] of createMatrixIter()){
-//   getNeighbours(row,col);
-// }
