@@ -22,10 +22,9 @@ body {
   grid-row-tart: 10; */
   background-color: rgb(108, 230, 22);
   border: solid black 0.3vmin;
-  grid-row-start: 3;
-  grid-column-start: 3;
+
 }
 
 .dead {
-  display: none;
+  background-color: #ccc;
 }

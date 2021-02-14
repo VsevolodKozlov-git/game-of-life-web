@@ -1,8 +1,3 @@
-const cols = 20; // width
-const rows = 20; // height
-const gameGrid = document.querySelector('.game-grid');
-
-
 function* createMatrixIter(){
   let iterCnt = 0;
   for(let row=0; row<rows; row++){
@@ -27,8 +22,14 @@ function createGrid(){
 }
 
 
+// main game variables
+const cols = 20; // width
+const rows = 20; // height
+const gameGrid = document.querySelector('.game-grid');
+const animDeltaTime = 200; // time between next step of animation
 let grid = createGrid();
- 
+let pause = false;
+
 
 function getNeighbours(row, col){
   res = 0;
@@ -85,8 +86,8 @@ function draw(){
   gameGrid.innerHTML = '';
   for(let [row, col] of createMatrixIter()){
     const cellElement = document.createElement('div');
-    cellElement.style.gridRowStart = row+1;
-    cellElement.style.gridColumnStart = col+1;
+    cellElement.style.gridRowStart = String(row + 1);
+    cellElement.style.gridColumnStart = String(col + 1);
     // add specific class for cell
     alive = (grid[row][col] === 1);
     className = alive ? "life" : "dead";
@@ -99,23 +100,60 @@ function draw(){
 }
 
 
+
+
+let a = null; // debug variable
+
+//jquery listeners add
 function addMouseClickListeners(){
-  $('cell').onClick()
+  $('.cell').on("click", function(event) {
+    let jqueryObj = $(event.target);
+
+    // a = event.target;
+    let target = $(event.target);
+
+    //visual part(change css classes)
+    if (target.hasClass("life")){
+      target.removeClass("life");
+      target.addClass("dead");
+    }
+    else {
+      target.removeClass("dead");
+      target.addClass("life");
+    }
+
+    // logical part(change grid)
+    let row = Number(target.css("grid-row-start")) - 1;
+    let col = Number(target.css("grid-column-start")) - 1;
+    grid[row][col] = grid[row][col] === 1 ? 0 : 1;
+  })
 }
 
 
 
-deltaTime = 200;
+function addKeyboardListeners(){
+  $("body").on("keypress", function(event){
+    if (event.key === "p"){
+      pause = !pause;
+    }
+  });
+}
+
+
+// technical animation variable
 let lastRenderTime = 0;
 
+// function that repeat each $animDeltaTime
 function main(currentTime) {
   window.requestAnimationFrame(main)
   const secondsSinceLastRender = (currentTime - lastRenderTime);
-  if (secondsSinceLastRender < deltaTime) return
+  if (secondsSinceLastRender < animDeltaTime || pause) return;
   lastRenderTime = currentTime;
   draw();
+  addMouseClickListeners();
   step();
 }
 
-
+// run main function
+addKeyboardListeners();
 window.requestAnimationFrame(main);
